@@ -32,7 +32,7 @@ public class HospedesController {
 	public Hospedes getHospede(@PathVariable("id")Long id) {
 		Optional<Hospedes> hospede = hospedesRepository.findById(id); 
 		if(!hospede.isPresent()) {
-			throw new ResourceNotFoundException("HÛspede ID: " + id + " n„o encontrado.");
+			throw new ResourceNotFoundException("H√≥spede ID: " + id + " n√£o encontrado.");
 		}
 		return hospede.get();
 	}
@@ -46,7 +46,7 @@ public class HospedesController {
 	public Hospedes updateHospede(@RequestBody Hospedes hospede, @PathVariable Long id){
 		Optional<Hospedes> hospedeOptional = hospedesRepository.findById(id);
 		if(!hospedeOptional.isPresent()) {
-			throw new ResourceNotFoundException("HÛspede n„o encontrado.");
+			throw new ResourceNotFoundException("H√≥spede n√£o encontrado.");
 		}
 		
 		hospede.setId(id);

@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  db:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: hoteldb_user
+      POSTGRES_PASSWORD: Q770OgLI1A
+      POSTGRES_DB: hoteldb
+    ports:
+      - "5432:5432"
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: luisfelipe.claro@outlook.com
+      PGADMIN_DEFAULT_PASSWORD: Q770OgLI1A
+    ports:
+      - "5050:80"
