@@ -9,6 +9,8 @@ import com.hotel.hotelchallengegradle.repository.ReservaRepository;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,8 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping(value = "/hotel", produces = {"application/json"})
+@Tag(name = "Booking")
 public class ReservasController {
 
 	@Autowired
@@ -34,7 +38,8 @@ public class ReservasController {
 	private ReservaRepository reservasRepository;
 	
 	@PostMapping("/reservas/checkin")
-	public Reservas createReserva(@Valid @RequestBody Reservas reserva) {
+	@Operation(summary = "Create booking", method = "POST")
+	public Reservas createReserva(@Valid @RequestBody @RequestParam(value = "reserva") Reservas reserva) {
 		
 		Hospedes hospede = hospedesRepository.findOneByNomeIgnoreCaseAndDocumentoAndTelefone(reserva.getHospede().getNome(), reserva.getHospede().getDocumento(), reserva.getHospede().getTelefone());
 		if(hospede == null) {
@@ -53,7 +58,8 @@ public class ReservasController {
 	}
 	
 	@GetMapping("/reservas/abertas")
-	public Page<Reservas> reservasAbertas(Pageable pageable){
+	@Operation(summary = "Fetch opened bookings", method = "GET")
+	public Page<Reservas> reservasAbertas(@RequestParam(value = "pageable", required = false) Pageable pageable){
 		Page<Reservas> reservas = reservasRepository.findByDataSaidaIsNull(pageable);
 		if(reservas.getSize() > 0) {
 			for(Reservas res : reservas) {
@@ -66,7 +72,8 @@ public class ReservasController {
 	}
 	
 	@GetMapping("/reservas/fechadas")
-	public Page<Reservas> reservasFechadas(Pageable pageable){
+	@Operation(summary = "Fetch closed bookings", method = "GET")
+	public Page<Reservas> reservasFechadas(@RequestParam(value = "pageable", required = false) Pageable pageable){
 		Page<Reservas> reservas = reservasRepository.findByDataSaidaIsNotNull(pageable);
 		if(reservas.getSize() > 0) {
 			for(Reservas res : reservas) {
@@ -82,21 +89,12 @@ public class ReservasController {
 		double valor = 0.0;
 		Date current = dataEntrada;
 
-		/*
-		 * domingo 1
-		 * segunda 2
-		 * terca 3
-		 * quarta 4
-		 * quinta 5
-		 * sexta 6
-		 * sabado 7
-		 * */
-
 		while(current.before(dataSaida)) {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(current);
 			
-			if(calendar.get(Calendar.DAY_OF_WEEK) == 1 || calendar.get(Calendar.DAY_OF_WEEK) == 7) {
+			if(calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+					|| calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
 				// final de semana
 				valor = valor + 150;
 				if(adicionalVeiculo) {
