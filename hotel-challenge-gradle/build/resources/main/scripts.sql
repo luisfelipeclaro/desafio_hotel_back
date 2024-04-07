@@ -1,7 +1,7 @@
 create table hospedes (
 	id int generated always as identity,
 	nome varchar(255) not null,
-	document varchar(255) not null,
+	documento varchar(255) not null,
 	telefone varchar(255) not null,
 	primary key(id)
 );
